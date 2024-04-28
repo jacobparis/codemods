@@ -1,0 +1,14 @@
+{
+  "$schema": "https://codemod-utils.s3.us-west-1.amazonaws.com/configuration_schema.json",
+  "version": "1.0.1",
+  "private": false,
+  "name": "remix/single-fetch/enable-flag",
+  "engine": "ts-morph",
+  "include": ["vite.config.ts"],
+  "applicability": {
+    "from": [["@remix-run/react", ">=", "2.9.0"]]
+  },
+  "meta": {
+    "tags": ["remix", "single-fetch"]
+  }
+}
