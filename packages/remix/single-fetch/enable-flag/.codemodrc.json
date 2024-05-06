@@ -5,6 +5,9 @@
   "name": "remix/single-fetch/enable-flag",
   "engine": "ts-morph",
   "include": ["vite.config.ts"],
+  "build": {
+    "input": "./src/index.ts"
+  },
   "applicability": {
     "from": [["@remix-run/react", ">=", "2.9.0"]]
   },

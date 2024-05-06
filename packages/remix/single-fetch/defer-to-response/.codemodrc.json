@@ -6,6 +6,9 @@
   "engine": "ts-morph",
   "include": ["*/routes/**/*.ts", "*/routes/**/*.tsx"],
   "exclude": ["build"],
+  "build": {
+    "input": "./src/index.ts"
+  },
   "applicability": {
     "from": [["@remix-run/react", ">=", "2.9.0"]]
   },

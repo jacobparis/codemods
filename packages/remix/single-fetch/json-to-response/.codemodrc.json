@@ -4,8 +4,11 @@
   "private": false,
   "name": "remix/single-fetch/json-to-response",
   "engine": "ts-morph",
-  "include": ["*/routes/**/*.ts", "*/routes/**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["build"],
+  "build": {
+    "input": "./src/index.ts"
+  },
   "applicability": {
     "from": [["@remix-run/react", ">=", "2.9.0"]]
   },
