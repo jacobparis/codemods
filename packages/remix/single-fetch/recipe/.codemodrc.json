@@ -1,6 +1,6 @@
 {
   "$schema": "https://codemod-utils.s3.us-west-1.amazonaws.com/configuration_schema.json",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "name": "remix/single-fetch/recipe",
   "engine": "recipe",
@@ -9,7 +9,8 @@
     "remix/single-fetch/include-typedef",
     "remix/single-fetch/json-to-response",
     "remix/single-fetch/defer-to-response",
-    "remix/single-fetch/redirect-to-response"
+    "remix/single-fetch/redirect-to-response",
+    "remix/single-fetch/new-response-to-response"
   ],
   "applicability": {
     "from": [["@remix-run/react", ">=", "2.9.0"]]
