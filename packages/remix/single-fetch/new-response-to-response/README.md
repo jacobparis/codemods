@@ -35,12 +35,18 @@ Output:
 
 ```ts
 export async function loader({ response }: LoaderFunctionArgs) {
-	response!.body = JSON.stringify({ session: getSession() })
 	response!.status = 200
 	response!.headers.set('Content-Type', 'application/json')
-	return response
+	return JSON.stringify({
+		session: getSession(),
+	})
 }
 ```
+
+## Thrown responses are ignored
+
+If you `throw new Response()` in an action or loader, it will be ignored and not
+transformed, since this use case is still supported.
 
 ## Headers can't be set to a function
 
@@ -66,9 +72,8 @@ export async function action({ request, response }: ActionFunctionArgs) {
 		title: 'Deleted',
 		description: 'Your connection has been deleted.',
 	})
-	response!.body = 'success'
 	// TODO: response!.headers = toastHeaders
-	return response
+	return 'success'
 }
 ```
 
@@ -103,10 +108,9 @@ will be transformed to
 ```ts
 export async function loader({ request, response }: LoaderFunctionArgs) {
 	const response2 = await fetch(process.env.DATABASE_URL).then(r => r.json())
-	response!.body = JSON.stringify({ session: response2.data })
 	response!.status = 200
 	response!.headers.set('Content-Type', 'application/json')
 
-	return response
+	return JSON.stringify({ session: response2.data })
 }
 ```

@@ -27,6 +27,8 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 		return undefined
 	}
 
+	const initialContents = sourceFile.getFullText()
+
 	const serverExports = sourceFile
 		.getExportSymbols()
 		.filter(symbol => ['loader', 'action'].includes(symbol.getName()))
@@ -51,17 +53,26 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 			.getDescendantsOfKind(SyntaxKind.Identifier)
 			.filter(node => node.getText() === 'response')
 
+		const throws = exportNode
+			.getDescendantsOfKind(SyntaxKind.ThrowStatement)
+			.map(node => node.getChildAtIndex(1))
+
 		const helperCalls = exportNode
 			.getDescendantsOfKind(SyntaxKind.NewExpression)
+			// Ignore new Responses() that are thrown
+			.filter(call => !throws.includes(call))
 			.filter(call =>
 				call
 					.getChildrenOfKind(SyntaxKind.Identifier)
 					.find(child => child.getText() === 'Response'),
 			)
 
+		if (helperCalls.length === 0) {
+			continue
+		}
+
 		for (const call of helperCalls) {
 			const [body, options] = call.getArguments()
-
 			let responseStatements = []
 
 			// If the call argument is destructured, ensure that the `response` property is visible
@@ -78,6 +89,7 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 						.getElements()
 						.find(node => node.getText() === 'response')
 				) {
+					console.log(destructuredArg.getElements().map(node => node.getText()))
 					shouldRenameExistingResponseVars = true
 					doesNotHaveResponseArg = true
 				}
@@ -102,10 +114,6 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 						node.replaceWithText('response2')
 					}
 				})
-			}
-
-			if (body) {
-				responseStatements.push(`response!.body = ${body.getText()}`)
 			}
 
 			const statusKey = options
@@ -151,6 +159,8 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 					// Can't set headers from a function
 					const value = headersKey.getInitializer()?.getText()
 					responseStatements.push(`/* TODO: response!.headers = ${value} */`)
+				} else {
+					console.log({ headersValue })
 				}
 			}
 
@@ -173,7 +183,12 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 				)
 			}
 
-			call.replaceWithText([argsName, 'response'].filter(Boolean).join('.'))
+			// json({ foo: 'bar' }) -> { foo: 'bar' }
+			if (body) {
+				call.replaceWithText(body.getText())
+			} else {
+				call.replaceWithText('{}')
+			}
 		}
 
 		if (doesNotHaveResponseArg && usesResponseArg) {
@@ -184,7 +199,9 @@ export function handleSourceFile(sourceFile: SourceFile): string | undefined {
 		}
 	}
 
-	return sourceFile.getFullText()
+	const sourceFileText = sourceFile.getFullText()
+
+	return initialContents !== sourceFileText ? sourceFileText : undefined
 }
 
 function prependLines(node: Node, lines: string[]) {

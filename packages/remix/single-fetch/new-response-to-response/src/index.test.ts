@@ -40,6 +40,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		).toBeUndefined()
 	})
 
+	test('ignores thrown responses', async () => {
+		expect(
+			transform(`
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	await requireAnonymous(request)
+	throw new Response({
+		session: null,
+	})
+}
+
+export default function Page() { }
+`),
+		).toBeUndefined()
+	})
+
 	test('adds response to no args', async () => {
 		const input = await prettier(`
 
@@ -56,9 +72,8 @@ export default function Page() { }
 			await prettier(`
 
 export async function loader(args: LoaderFunctionArgs) {
-	args.response!.body = 'success'
 	args.response!.status = 200
-	return args.response
+	return 'success'
 }
 
 export default function Page() { }
@@ -82,9 +97,8 @@ export default function Page() { }
 			await prettier(`
 
 export async function loader({ response }: LoaderFunctionArgs) {
-	response!.body = 'success'
 	response!.status = 200
-	return response
+	return 'success'
 }
 
 export default function Page() { }
@@ -108,9 +122,8 @@ export default function Page() { }
 			await prettier(`
 
 export const loader = async ({ response }: LoaderFunctionArgs) => {
-	response!.body = 'success'
 	response!.status = 200
-	return response
+	return 'success'
 }
 
 export default function Page() { }
@@ -137,10 +150,9 @@ export default function Page() { }
 
 export async function loader({ request, response }: LoaderFunctionArgs) {
 	await requireAnonymous(request)
-	response!.body = 'success'
 	response!.status = 200
 
-	return response
+	return 'success'
 }
 
 export default function Page() { }
@@ -167,10 +179,9 @@ export default function Page() { }
 
 export async function loader(args: LoaderFunctionArgs) {
 	await requireAnonymous(args.request)
-	args.response!.body = 'success'
 	args.response!.status = 200
 
-	return args.response
+	return 'success'
 }
 
 export default function Page() { }
@@ -199,10 +210,9 @@ export default function Page() { }
 
 	export async function loader({ request, response }: LoaderFunctionArgs) {
 		await requireAnonymous(request)
-		response!.body = JSON.stringify({ session: null })
 		response!.headers.set('Content-Type', 'application/json')
 
-		return response
+		return JSON.stringify({ session: null })
 	}
 
 	export default function Page() { }
@@ -237,10 +247,9 @@ export default function Page() { }
 		const headers = {
 			'Content-Type': 'application/json',
 		}
-		response!.body = JSON.stringify({ session: null })
 		response!.headers.set('Content-Type', 'application/json')
 
-		return response
+		return JSON.stringify({ session: null })
 	}
 
 	export default function Page() { }
@@ -270,9 +279,8 @@ export async function action({ request, response }: ActionFunctionArgs) {
 		title: 'Deleted',
 		description: 'Your connection has been deleted.',
 	})
-	response!.body = 'success'
 	/* TODO: response!.headers = toastHeaders */
-	return response
+	return 'success'
 }
 
 export default function Page() { }
@@ -302,9 +310,8 @@ export async function action({ request, response }: ActionFunctionArgs) {
 		title: 'Deleted',
 		description: 'Your connection has been deleted.',
 	})
-	response!.body = 'success'
 	/* TODO: response!.headers = toastHeaders */
-	return response
+	return 'success'
 }
 
 export default function Page() { }
@@ -336,13 +343,12 @@ export default function Page() { }
 
 export async function loader({ request, response }: LoaderFunctionArgs) {
 	const response2 = await fetch(process.env.DATABASE_URL).then(r => r.json())
-	response!.body = JSON.stringify({
-		session: response2.data
-	})
 	response!.status = 200
 	response!.headers.set('Content-Type', 'application/json')
 
-	return response
+	return JSON.stringify({
+		session: response2.data
+	})
 }
 
 export default function Page() { }
