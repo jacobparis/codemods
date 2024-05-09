@@ -1,12 +1,13 @@
 {
   "$schema": "https://codemod-utils.s3.us-west-1.amazonaws.com/configuration_schema.json",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": false,
   "name": "remix/single-fetch/recipe",
   "engine": "recipe",
   "names": [
     "remix/single-fetch/enable-flag",
     "remix/single-fetch/include-typedef",
+    "remix/single-fetch/replace-types",
     "remix/single-fetch/json-to-response",
     "remix/single-fetch/defer-to-response",
     "remix/single-fetch/redirect-to-response",
