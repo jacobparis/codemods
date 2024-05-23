@@ -3,6 +3,7 @@
 This codemod runs all of the Single Fetch codemods in order
 
 - [Enable unstable_singleFetch flag](https://codemod.com/registry/remix-single-fetch-enable-flag)
+- [Enable installGlobals nativeFetch](https://codemod.com/registry/remix-single-fetch-enable-install-globals-native-fetch)
 - [Include single fetch typedefs](https://codemod.com/registry/remix-single-fetch-include-typedef)
 - [Replace UIMatch and MetaArgs types](https://codemod.com/registry/remix-single-fetch-replace-types)
 - [Refactor json() to response arg](https://codemod.com/registry/remix-single-fetch-json-to-response)
