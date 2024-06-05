@@ -1,10 +1,11 @@
 {
   "$schema": "https://codemod-utils.s3.us-west-1.amazonaws.com/configuration_schema.json",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "private": false,
-  "name": "remix/single-fetch/enable-flag",
+  "name": "remix/2/route-exports-to-define-route",
   "engine": "ts-morph",
-  "include": ["vite.config.ts", "vite.config.mts"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["build"],
   "build": {
     "input": "./src/index.ts"
   },
@@ -12,6 +13,6 @@
     "from": [["@remix-run/react", ">=", "2.9.0"]]
   },
   "meta": {
-    "tags": ["remix", "single-fetch"]
+    "tags": ["remix"]
   }
 }
